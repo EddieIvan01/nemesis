@@ -13,7 +13,7 @@
 
 How to use:
 
-```python
+```
 > git clone https://github.com/EddieIvan01/Nemesis.git
 > cd Nemesis
 > python3 nemesis.py http://127.0.0.1/shell.php pass
@@ -44,7 +44,7 @@ test
 
 Usage:
 
-```python
+```
 usage:
   Manager mode(for manage shells): ./nemesis.py [-h] [-p PROXY]
   Normal mode(for only one shell): ./nemesis.py URL PASSWD [-h] [-l LANG] [-p PROXY]
@@ -63,7 +63,7 @@ optional arguments:
 
 + Manager模式：
 
-  ```python
+  ```
   # 直接启动
   # 读取本地config.json中的Webshell list
   
@@ -102,7 +102,7 @@ optional arguments:
 
 + Shell模式
 
-  ```python
+  ```
   # 进入单一shell
   > python3 nemesis.py http://127.0.0.1/shell.php pass
   ```
@@ -134,7 +134,7 @@ Tips：
 
 + CTF中一键寻找Flag，有几次拿到shell了确花了半天找flag究竟在根目录还是Web根目录还是在哪哪哪儿，故写了此功能，只能在Manager Mode运行，寻找所有名字带flag的文件：
 
-  ```python
+  ```
   > python3 nemesis.py
            _   _                                   _
           | \ | |   ___   _ __ ___     ___   ___  (_)  ___
