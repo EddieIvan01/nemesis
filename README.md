@@ -1,6 +1,10 @@
 # Nemesis
 命令行网站管理工具（cai dao）
 
+名字取义自北欧神话的复仇女神`Nemesis`
+
+***
+
 运行于Python 3.x
 
 暂时仅支持：
