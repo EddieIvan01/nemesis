@@ -9,9 +9,18 @@
 
 暂时仅支持：
 
-+ PHP + Linux
-+ PHP + Windows
-+ Aspx + Windows
+- [x] PHP + Linux
+
+- [x] PHP + Windows
+
+- [x] Aspx + Windows
+
+- [ ] Asp + Windows
+
+- [ ] Jsp + Windows
+
+- [ ] Jsp + Linux
+
 
 `payload`为`fiddler`抓包菜刀后轻微简化
 
