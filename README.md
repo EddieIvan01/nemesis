@@ -132,7 +132,7 @@ Tips：
   > python3 nemesis.py -p socks4://127.0.0.1:9050
   ```
 
-+ CTF中一键寻找Flag，有几次拿到shell了确花了半天找flag究竟在根目录还是Web根目录还是在哪哪哪儿，故写了此功能，只能在Manager Mode运行，寻找所有名字带flag的文件：
++ CTF中一键寻找Flag，有几次拿到shell了确花了半天找flag究竟在根目录还是Web根目录还是在哪哪哪儿，故写了此功能，只能在Manager Mode运行，寻找所有名字带flag的文件，读取后正则匹配`/(\w+\{[-\w]+\})/`：
 
   ```
   > python3 nemesis.py
