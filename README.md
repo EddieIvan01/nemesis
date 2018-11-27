@@ -7,7 +7,7 @@
 
 运行于Python 3.x
 
-暂时仅支持：
+支持：
 
 - [x] PHP + Linux
 
