@@ -1,6 +1,8 @@
 # Nemesis
 命令行网站管理工具（cai dao）
 
+运行于Python 3.x
+
 暂时仅支持：
 
 + PHP + Linux
