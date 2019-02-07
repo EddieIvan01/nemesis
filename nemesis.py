@@ -11,16 +11,20 @@ import sys
 import argparse
 
 import exploit.exp as exp
+from dbconnector import handler_db as db
+
 
 
 class ShellManager(object):
     
     """
-    " This is program's main loop obj
+    " This is main loop obj
     " Use it by
+    "
     " with ShellManager() as manager:
     "     pass
-    " When it exits, it will write shells' config in 'config.json'
+    "
+    " When it exits, it will write shells' config to 'config.json'
     """
     
     def __init__(self, isManagerMode=False):
@@ -35,15 +39,19 @@ class ShellManager(object):
         """
         try:
             tmp = open("config.json", "r")
-        except:
-            sys.exit("[!]Config file doesnt exit")
-        try:
             self.config = json.loads(tmp.read())
-        except:
-            sys.exit("[!]Json format error")
-        tmp.close()
+        except FileNotFoundError:
+            print("[!]Config file doesnt exit")
+            sys.exit()
+        except json.JSONDecodeError:
+            print("[!]Json format error")
+            sys.exit()
+        finally:
+            tmp.close()
+            
         self.shell_list = []
         self.shell_obj_list = []
+        
         for i in self.config["shell"]:
             """
             Default os is Linux
@@ -56,6 +64,7 @@ class ShellManager(object):
             if not i["lang"]:
                 i["lang"] = i["url"].split(".")[-1]
             tmp_obj = exp.LinuxEXP(i["url"], i["pwd"], i["lang"], proxies)
+            
             if not tmp_obj.judge_os():
                 tmp_obj = exp.WindowsEXP(i["url"], i["pwd"], i["lang"], proxies)
             self.shell_obj_list.append(tmp_obj)
@@ -164,12 +173,11 @@ class ShellManager(object):
     
     @staticmethod
     def manager_mode_help():
-        print("""
-[*]Manager mode command: 
-     enter [index]                       --choose a shell to use
-     set [index]:[encode | pwd] xxx      --change shells' encode or passwd
-     flag                                --find flag in ctf
-     exit"""
+        print("[*]Manager mode command:\n" 
+              "     enter [index]                       --choose a shell to use\n"
+              "     set [index]:[encode | pwd] xxx      --change shells' encode or passwd\n"
+              "     flag                                --find flag in ctf\n"
+              "     exit"
         )
         
     def main_loop(self, url="", pwd="", lang=""):
@@ -181,6 +189,7 @@ class ShellManager(object):
         """
         if self.isManagerMode:
             self.manager_mode_help()
+            
             while True:
                 """
                 If u want to flush the screen
@@ -219,6 +228,7 @@ class ShellManager(object):
             while True:
                 self.only_one_shell_loop(url, pwd, lang)
                 
+                
 def banner():
     print(\
         '''
@@ -234,17 +244,22 @@ def banner():
     
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(usage="\n  Manager mode(for manage shells): ./nemesis.py [-h] [-p PROXY]\n"\
-                                            "  Normal mode(for only one shell): ./nemesis.py URL PASSWD [-h] [-l LANG] [-p PROXY]")
+    parser = argparse.ArgumentParser(usage="\n  Manager mode(for manage shells):  ./nemesis.py [-h] [-p PROXY]\n"\
+                                            "  Normal mode(for only one shell):  ./nemesis.py URL PASSWD [-h] [-l LANG] [-p PROXY]\n"
+                                            "  DB mode(for connect to database): ./nemesis.py DBURI(e.g. mysql://root:test123@127.0.0.1:3306) [-h]"
+                                            )
     banner()
     
     t = ''.join(sys.argv)
     """
     To support two modes
     """
-    if ("http" in t and t.count("-phttp")==0 and t.count("--proxyhttp")==0) or (t.count("http")==2):
+    if "mysql" in t or "mssql" in t:
+        parser.add_argument("dburi", type=str, help="db's uri", default="")
+    elif ("http" in t and t.count("-phttp")==0 and t.count("--proxyhttp")==0) or (t.count("http")==2):
         parser.add_argument("shell", type=str, help="webshell's addr", default="")
         parser.add_argument("pwd", type=str, help="webshell's passwd", default="")
+    
     parser.add_argument("-l", "--lang", type=str, dest="lang", help="if webshell's language is diffrent"\
                         " to file suffix name, use it", default="")
     parser.add_argument("-p", "--proxy", type=str, dest="proxy", default="", help="requests' proxy, e.g: socks5://127.0.0.1:1080")
@@ -257,8 +272,11 @@ if __name__ == "__main__":
             "https": args.proxy
         }
         print("[+]Use proxy: "+args.proxy)
+    
     isManagerMode = False
-    if not hasattr(args, "shell") or not hasattr(args, "pwd"):
+    if hasattr(args, "dburi"):
+        db(args.dburi)    
+    elif not hasattr(args, "shell") or not hasattr(args, "pwd"):
         isManagerMode = True
         with ShellManager(isManagerMode) as manager:
             manager.main_loop()

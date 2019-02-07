@@ -1,5 +1,5 @@
 # Nemesis
-命令行网站管理工具（cai dao）
+命令行网站管理工具
 
 名字取义自北欧神话的复仇女神`Nemesis`
 
@@ -8,6 +8,8 @@
 运行于Python 3.x
 
 支持：
+
+Webshell：
 
 - [x] PHP + Linux
 
@@ -21,12 +23,17 @@
 
 - [ ] Jsp + Linux
 
+数据库连接：
 
-`payload`为`fiddler`抓包菜刀后轻微简化
+- [x] MySql
+
+- [x] MSSql
+
+- [ ] Oracle
 
 ***
 
-How to use:
+**How to use:**
 
 ```
 > git clone https://github.com/EddieIvan01/Nemesis.git
@@ -61,8 +68,9 @@ Usage:
 
 ```
 usage:
-  Manager mode(for manage shells): ./nemesis.py [-h] [-p PROXY]
-  Normal mode(for only one shell): ./nemesis.py URL PASSWD [-h] [-l LANG] [-p PROXY]
+  Manager mode(for manage shells):  ./nemesis.py [-h] [-p PROXY]
+  Normal mode(for only one shell):  ./nemesis.py URL PASSWD [-h] [-l LANG] [-p PROXY]
+  DB mode(for connect to database): ./nemesis.py DBURI(e.g. mysql://root:test123@127.0.0.1:3306) [-h]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -74,7 +82,7 @@ optional arguments:
 
 
 
-两种模式：
+三种模式：
 
 + Manager模式：
 
@@ -122,11 +130,16 @@ optional arguments:
   > python3 nemesis.py http://127.0.0.1/shell.php pass
   ```
 
++ DB模式
 
+  ```
+  # 连接MySql/MSSql数据库
+  > python3 nemesis.py mysql://root:root@127.0.0.1
+  ```
 
 ***
 
-Tips：
+**Tips：**
 
 + 默认Webshell语言为URL后缀，假如连接的是图片马 or 混淆后缀：使用`-l`或`--lang`
 
@@ -193,4 +206,10 @@ Tips：
   [0] URL => http://127.0.0.1/shell.php   PWD =>ck   OS => win   ENCODE => gbk
   
   @Nemesis>
+  ```
+
++ 连接数据库时假如密码含有特殊字符如`@`，会对parse造成干扰，需使用飘号包裹：
+
+  ```
+  mysql://root:`abc@#123`@127.0.0.1:3306
   ```
